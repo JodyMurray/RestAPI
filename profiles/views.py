@@ -7,7 +7,10 @@ from .serializers import ProfileSerializer
 
 
 class ProfileList(generics.ListAPIView):
-
+    """
+    List all profiles.
+    No create view as profile creation is handled by django signals.
+    """
     queryset = Profile.objects.annotate(
         posts_count=Count('owner__post', distinct=True),
         followers_count=Count('owner__followed', distinct=True),
@@ -20,14 +23,14 @@ class ProfileList(generics.ListAPIView):
     ]
     filterset_fields = [
         'owner__following__followed__profile',
-        'owner__followed__owner__profile'
+        'owner__followed__owner__profile',
     ]
     ordering_fields = [
         'posts_count',
         'followers_count',
         'following_count',
-        'owner_following_created_at',
-        'owner_followed_created_at',
+        'owner__following__created_at',
+        'owner__followed__created_at',
     ]
 
 
